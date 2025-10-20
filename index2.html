@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4-7-8 Breathing Exercise</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f9ff;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .breathing-circle {
+            transition: all 0.5s ease;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .inhale {
+            background-color: #3b82f6;
+            animation: pulseInhale 4s infinite;
+        }
+        
+        .hold {
+            background-color: #10b981;
+            animation: pulseHold 7s infinite;
+        }
+        
+        .exhale {
+            background-color: #6366f1;
+            animation: pulseExhale 8s infinite;
+        }
+        
+        @keyframes pulseInhale {
+            0% { transform: scale(0.9); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(0.9); }
+        }
+        
+        @keyframes pulseHold {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes pulseExhale {
+            0% { transform: scale(1.1); }
+            50% { transform: scale(0.9); }
+            100% { transform: scale(1.1); }
+        }
+        
+        .phase-indicator {
+            transition: all 0.3s ease;
+        }
+        
+        .active-phase {
+            transform: scale(1.1);
+            font-weight: 600;
+        }
+        
+        .sound-toggle {
+            transition: all 0.3s ease;
+        }
+        
+        .sound-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center">
+    <div class="w-full max-w-md p-6 rounded-xl bg-white shadow-lg">
+        <h1 class="text-2xl font-bold text-center text-gray-800 mb-2">4-7-8 Breathing Exercise</h1>
+        <p class="text-center text-gray-600 mb-6">Relax your mind with this calming technique</p>
+        
+        <div class="flex justify-center mb-8">
+            <div id="breathing-circle" class="breathing-circle w-64 h-64 rounded-full flex items-center justify-center text-white text-4xl font-bold inhale">
+                <div id="timer-display">4</div>
+            </div>
+        </div>
+        
+        <div class="flex justify-between mb-8 px-4">
+            <div id="inhale-indicator" class="phase-indicator text-blue-500 text-lg active-phase">
+                <i class="fas fa-arrow-down mr-2"></i>Inhale (4s)
+            </div>
+            <div id="hold-indicator" class="phase-indicator text-emerald-500 text-lg">
+                <i class="fas fa-pause mr-2"></i>Hold (7s)
+            </div>
+            <div id="exhale-indicator" class="phase-indicator text-indigo-500 text-lg">
+                <i class="fas fa-arrow-up mr-2"></i>Exhale (8s)
+            </div>
+        </div>
+        
+        <div class="flex justify-center mb-6 gap-4">
+            <button id="start-btn" class="px-8 py-3 bg-blue-500 text-white rounded-full font-semibold shadow-md hover:bg-blue-600 transition-all">
+                <i class="fas fa-play mr-2"></i>Start
+            </button>
+            <button id="stop-btn" class="px-8 py-3 bg-red-500 text-white rounded-full font-semibold shadow-md hover:bg-red-600 transition-all hidden">
+                <i class="fas fa-stop mr-2"></i>Stop
+            </button>
+        </div>
+        
+        <div class="flex justify-between items-center mt-6 px-4">
+            <div class="text-gray-500">
+                <i class="fas fa-info-circle mr-2"></i>Cycle: <span id="cycle-count">0</span>
+            </div>
+            <button id="sound-toggle" class="sound-toggle text-gray-700">
+                <i class="fas fa-volume-up text-xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <audio id="inhale-sound">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-software-interface-start-2574.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="hold-sound">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-software-interface-start-2574.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="exhale-sound">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-software-interface-start-2574.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const timerDisplay = document.getElementById('timer-display');
+            const startBtn = document.getElementById('start-btn');
+            const stopBtn = document.getElementById('stop-btn');
+            const breathingCircle = document.getElementById('breathing-circle');
+            const cycleCount = document.getElementById('cycle-count');
+            
+            const inhaleIndicator = document.getElementById('inhale-indicator');
+            const holdIndicator = document.getElementById('hold-indicator');
+            const exhaleIndicator = document.getElementById('exhale-indicator');
+            
+            const inhaleSound = document.getElementById('inhale-sound');
+            const holdSound = document.getElementById('hold-sound');
+            const exhaleSound = document.getElementById('exhale-sound');
+            const soundToggle = document.getElementById('sound-toggle');
+            
+            let timer;
+            let currentPhase = 'inhale';
+            let currentTime = 4;
+            let cycles = 0;
+            let isRunning = false;
+            let soundEnabled = true;
+            
+            // Initialize
+            updateUI();
+            
+            // Event listeners
+            startBtn.addEventListener('click', startTimer);
+            stopBtn.addEventListener('click', stopTimer);
+            soundToggle.addEventListener('click', toggleSound);
+            
+            function startTimer() {
+                if (isRunning) return;
+                
+                isRunning = true;
+                startBtn.classList.add('hidden');
+                stopBtn.classList.remove('hidden');
+                
+                playPhaseSound();
+                runTimer();
+            }
+            
+            function stopTimer() {
+                isRunning = false;
+                clearTimeout(timer);
+                
+                startBtn.classList.remove('hidden');
+                stopBtn.classList.add('hidden');
+                
+                // Reset to initial state
+                currentPhase = 'inhale';
+                currentTime = 4;
+                cycles = 0;
+                cycleCount.textContent = cycles;
+                updateUI();
+            }
+            
+            function runTimer() {
+                if (!isRunning) return;
+                
+                timer = setTimeout(() => {
+                    currentTime--;
+                    
+                    if (currentTime <= 0) {
+                        // Move to next phase
+                        switch (currentPhase) {
+                            case 'inhale':
+                                currentPhase = 'hold';
+                                currentTime = 7;
+                                break;
+                            case 'hold':
+                                currentPhase = 'exhale';
+                                currentTime = 8;
+                                break;
+                            case 'exhale':
+                                currentPhase = 'inhale';
+                                currentTime = 4;
+                                cycles++;
+                                cycleCount.textContent = cycles;
+                                break;
+                        }
+                        
+                        playPhaseSound();
+                    }
+                    
+                    updateUI();
+                    runTimer();
+                }, 1000);
+            }
+            
+            function updateUI() {
+                timerDisplay.textContent = currentTime;
+                
+                // Update circle styling
+                breathingCircle.className = 'breathing-circle w-64 h-64 rounded-full flex items-center justify-center text-white text-4xl font-bold';
+                breathingCircle.classList.add(currentPhase);
+                
+                // Update phase indicators
+                inhaleIndicator.classList.remove('active-phase');
+                holdIndicator.classList.remove('active-phase');
+                exhaleIndicator.classList.remove('active-phase');
+                
+                switch (currentPhase) {
+                    case 'inhale':
+                        inhaleIndicator.classList.add('active-phase');
+                        break;
+                    case 'hold':
+                        holdIndicator.classList.add('active-phase');
+                        break;
+                    case 'exhale':
+                        exhaleIndicator.classList.add('active-phase');
+                        break;
+                }
+            }
+            
+            function playPhaseSound() {
+                if (!soundEnabled) return;
+                
+                switch (currentPhase) {
+                    case 'inhale':
+                        inhaleSound.currentTime = 0;
+                        inhaleSound.play().catch(e => console.log("Audio play failed:", e));
+                        break;
+                    case 'hold':
+                        holdSound.currentTime = 0;
+                        holdSound.play().catch(e => console.log("Audio play failed:", e));
+                        break;
+                    case 'exhale':
+                        exhaleSound.currentTime = 0;
+                        exhaleSound.play().catch(e => console.log("Audio play failed:", e));
+                        break;
+                }
+            }
+            
+            function toggleSound() {
+                soundEnabled = !soundEnabled;
+                
+                if (soundEnabled) {
+                    soundToggle.innerHTML = '<i class="fas fa-volume-up text-xl"></i>';
+                } else {
+                    soundToggle.innerHTML = '<i class="fas fa-volume-mute text-xl"></i>';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
