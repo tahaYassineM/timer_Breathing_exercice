@@ -1,379 +1,423 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>4-7-8 Breathing Exercise</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-        
-        .breath-animation {
-            animation: pulse 8s infinite ease-in-out;
-        }
-        
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.2);
-                opacity: 0.8;
-            }
-        }
-        
-        .circle {
-            transition: all 0.5s ease;
-        }
-        
-        .inhale {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-        
-        .hold {
-            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
-        }
-        
-        .exhale {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-        
-        .phase-text {
-            transition: all 0.3s ease;
-        }
-        
-        .tick {
-            animation: tick 1s infinite;
-        }
-        
-        @keyframes tick {
-            0%, 100% {
-                opacity: 0.5;
-            }
-            50% {
-                opacity: 1;
-            }
-        }
-        
-        /* Distinct pip styles for each phase */
-        .inhale-pip {
-            background-color: #4facfe;
-            width: 4px;
-            height: 16px;
-            border-radius: 4px;
-        }
-        
-        .hold-pip {
-            background-color: #a1c4fd;
-            width: 16px;
-            height: 4px;
-            border-radius: 4px;
-        }
-        
-        .exhale-pip {
-            background-color: #f093fb;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-        
-        /* Vibration effect for phase change */
-        @keyframes vibrate {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-2px); }
-            50% { transform: translateX(0); }
-            75% { transform: translateX(2px); }
-            100% { transform: translateX(0); }
-        }
-        
-        .phase-change {
-            animation: vibrate 0.3s linear;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>4-7-8 Breathing Exercise</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .breath-animation {
+      animation: pulse 8s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+      }
+    }
+
+    .phase-change {
+      animation: vibrate 0.3s linear;
+    }
+
+    @keyframes vibrate {
+      0% {
+        transform: translateX(0);
+      }
+      25% {
+        transform: translateX(-2px);
+      }
+      50% {
+        transform: translateX(0);
+      }
+      75% {
+        transform: translateX(2px);
+      }
+      100% {
+        transform: translateX(0);
+      }
+    }
+
+    .inhale-pip {
+      background-color: #4facfe;
+      width: 4px;
+      height: 16px;
+      border-radius: 4px;
+    }
+
+    .hold-pip {
+      background-color: #a1c4fd;
+      width: 16px;
+      height: 4px;
+      border-radius: 4px;
+    }
+
+    .exhale-pip {
+      background-color: #f093fb;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+  </style>
 </head>
-<body>
-    <div class="container mx-auto px-4 py-8 max-w-md">
-        <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
-            <div class="p-8 text-center">
-                <h1 class="text-3xl font-bold text-gray-800 mb-2">4-7-8 Breathing</h1>
-                <p class="text-gray-600 mb-8">A relaxation technique for stress relief</p>
-                
-                <div class="relative mb-8">
-                    <div class="circle mx-auto w-64 h-64 rounded-full flex items-center justify-center shadow-lg inhale">
-                        <div class="text-center">
-                            <div class="phase-text text-2xl font-semibold text-white mb-2">INHALE</div>
-                            <div class="timer text-6xl font-bold text-white">4</div>
-                        </div>
-                    </div>
-                    
-                    <div class="absolute -bottom-4 left-0 right-0 flex justify-center">
-                        <div class="bg-white rounded-full p-2 shadow-lg">
-                            <div id="phaseIndicator" class="flex space-x-2">
-                                <!-- Pips will be dynamically updated -->
-                                <div class="inhale-pip"></div>
-                                <div class="inhale-pip"></div>
-                                <div class="inhale-pip"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="flex justify-center space-x-4">
-                    <button id="startBtn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg">
-                        <i class="fas fa-play mr-2"></i> Start
-                    </button>
-                    <button id="stopBtn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg hidden">
-                        <i class="fas fa-stop mr-2"></i> Stop
-                    </button>
-                </div>
-                
-                <div class="mt-8">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-sm font-medium text-gray-700">Inhale</span>
-                        <span class="text-sm font-medium text-gray-700">4 sec</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5">
-                        <div id="inhaleProgress" class="bg-blue-500 h-2.5 rounded-full" style="width: 0%"></div>
-                    </div>
-                    
-                    <div class="flex justify-between items-center mb-2 mt-4">
-                        <span class="text-sm font-medium text-gray-700">Hold</span>
-                        <span class="text-sm font-medium text-gray-700">7 sec</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5">
-                        <div id="holdProgress" class="bg-indigo-400 h-2.5 rounded-full" style="width: 0%"></div>
-                    </div>
-                    
-                    <div class="flex justify-between items-center mb-2 mt-4">
-                        <span class="text-sm font-medium text-gray-700">Exhale</span>
-                        <span class="text-sm font-medium text-gray-700">8 sec</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5">
-                        <div id="exhaleProgress" class="bg-pink-500 h-2.5 rounded-full" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="bg-gray-50 px-8 py-4 text-center">
-                <p class="text-sm text-gray-600">Different sounds indicate each breathing phase.</p>
-            </div>
-        </div>
+<body class="flex flex-col min-h-screen">
+  <!-- Navbar -->
+  <nav class="bg-white shadow-md">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="#" class="text-2xl font-bold text-blue-600">BreathApp</a>
+      <ul class="hidden md:flex space-x-6 text-gray-700 font-medium">
+        <li><a href="#" class="hover:text-blue-600">Home</a></li>
+        <li><a href="#" class="hover:text-blue-600">About</a></li>
+        <li><a href="#" class="hover:text-blue-600">Contact</a></li>
+      </ul>
+      <button id="menuBtn" class="md:hidden text-gray-700 focus:outline-none">
+        <i class="fas fa-bars text-2xl"></i>
+      </button>
     </div>
+    <div id="mobileMenu" class="hidden md:hidden bg-white shadow-inner">
+      <ul class="flex flex-col space-y-2 px-4 py-3 text-gray-700 font-medium">
+        <li><a href="#" class="block py-1 hover:text-blue-600">Home</a></li>
+        <li><a href="#" class="block py-1 hover:text-blue-600">About</a></li>
+        <li><a href="#" class="block py-1 hover:text-blue-600">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
 
-    <!-- Audio elements for different phase sounds -->
-    <audio id="inhaleSound" src="https://assets.mixkit.co/sfx/preview/mixkit-software-interface-start-2574.mp3"></audio>
-    <audio id="holdSound" src="https://assets.mixkit.co/sfx/preview/mixkit-sci-fi-positive-notification-266.mp3"></audio>
-    <audio id="exhaleSound" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3"></audio>
-    <audio id="phaseChangeSound" src="https://assets.mixkit.co/sfx/preview/mixkit-software-interface-start-2574.mp3"></audio>
+  <!-- Main Content -->
+  <main class="flex-grow container mx-auto px-4 py-8 max-w-md">
+    <div class="bg-white rounded-3xl shadow-xl overflow-hidden">
+      <div class="p-8 text-center">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">4-7-8 Breathing</h1>
+        <p class="text-gray-600 mb-8">A relaxation technique for stress relief</p>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const circle = document.querySelector('.circle');
-            const phaseText = document.querySelector('.phase-text');
-            const timerDisplay = document.querySelector('.timer');
-            const startBtn = document.getElementById('startBtn');
-            const stopBtn = document.getElementById('stopBtn');
-            const inhaleProgress = document.getElementById('inhaleProgress');
-            const holdProgress = document.getElementById('holdProgress');
-            const exhaleProgress = document.getElementById('exhaleProgress');
-            const phaseIndicator = document.getElementById('phaseIndicator');
-            
-            // Audio elements
-            const inhaleSound = document.getElementById('inhaleSound');
-            const holdSound = document.getElementById('holdSound');
-            const exhaleSound = document.getElementById('exhaleSound');
-            const phaseChangeSound = document.getElementById('phaseChangeSound');
-            
-            let timer;
-            let currentPhase = 'inhale';
-            let currentTime = 4;
-            let isRunning = false;
-            
-            // Breathing phases configuration
-            const phases = {
-                inhale: {
-                    duration: 4,
-                    next: 'hold',
-                    colorClass: 'inhale',
-                    text: 'INHALE',
-                    pipClass: 'inhale-pip',
-                    pipCount: 3,
-                    sound: inhaleSound
-                },
-                hold: {
-                    duration: 7,
-                    next: 'exhale',
-                    colorClass: 'hold',
-                    text: 'HOLD',
-                    pipClass: 'hold-pip',
-                    pipCount: 2,
-                    sound: holdSound
-                },
-                exhale: {
-                    duration: 8,
-                    next: 'inhale',
-                    colorClass: 'exhale',
-                    text: 'EXHALE',
-                    pipClass: 'exhale-pip',
-                    pipCount: 1,
-                    sound: exhaleSound
-                }
-            };
-            
-            // Start the breathing exercise
-            function startExercise() {
-                if (isRunning) return;
-                
-                isRunning = true;
-                startBtn.classList.add('hidden');
-                stopBtn.classList.remove('hidden');
-                
-                currentPhase = 'inhale';
-                currentTime = phases.inhale.duration;
-                updateDisplay();
-                
-                // Play initial phase sound
-                playPhaseSound();
-                
-                runTimer();
+        <div class="relative mb-8">
+          <div
+            class="circle mx-auto w-64 h-64 rounded-full flex items-center justify-center shadow-lg inhale"
+          >
+            <div class="text-center">
+              <div class="phase-text text-2xl font-semibold text-white mb-2">INHALE</div>
+              <div class="timer text-6xl font-bold text-white">4</div>
+            </div>
+          </div>
+
+          <div
+            class="absolute -bottom-4 left-0 right-0 flex justify-center"
+          >
+            <div
+              class="bg-white rounded-full p-2 shadow-lg"
+            >
+              <div id="phaseIndicator" class="flex space-x-2">
+                <!-- Pips will be dynamically updated -->
+                <div class="inhale-pip"></div>
+                <div class="inhale-pip"></div>
+                <div class="inhale-pip"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-center space-x-4">
+          <button
+            id="startBtn"
+            class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg flex items-center justify-center"
+          >
+            <i class="fas fa-play mr-2"></i> Start
+          </button>
+          <button
+            id="stopBtn"
+            class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-8 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg flex items-center justify-center hidden"
+          >
+            <i class="fas fa-stop mr-2"></i> Stop
+          </button>
+        </div>
+
+        <div class="mt-8 space-y-6">
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-medium text-gray-700">Inhale</span>
+              <span class="text-sm font-medium text-gray-700">4 sec</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+              <div
+                id="inhaleProgress"
+                class="bg-blue-500 h-2.5 rounded-full"
+                style="width: 0%"
+              ></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-medium text-gray-700">Hold</span>
+              <span class="text-sm font-medium text-gray-700">7 sec</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+              <div
+                id="holdProgress"
+                class="bg-indigo-400 h-2.5 rounded-full"
+                style="width: 0%"
+              ></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-sm font-medium text-gray-700">Exhale</span>
+              <span class="text-sm font-medium text-gray-700">8 sec</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+              <div
+                id="exhaleProgress"
+                class="bg-pink-500 h-2.5 rounded-full"
+                style="width: 0%"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gray-50 px-8 py-4 text-center">
+        <p class="text-sm text-gray-600">Different sounds indicate each breathing phase.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Audio elements for different phase sounds -->
+ <audio id="inhaleSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+<audio id="holdSound" src="https://actions.google.com/sounds/v1/alarms/buzzer.ogg"></audio>
+<audio id="exhaleSound" src="https://actions.google.com/sounds/v1/human_voices/cough.ogg"></audio>
+<audio id="phaseChangeSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const circle = document.querySelector('.circle');
+      const phaseText = document.querySelector('.phase-text');
+      const timerDisplay = document.querySelector('.timer');
+      const startBtn = document.getElementById('startBtn');
+      const stopBtn = document.getElementById('stopBtn');
+      const inhaleProgress = document.getElementById('inhaleProgress');
+      const holdProgress = document.getElementById('holdProgress');
+      const exhaleProgress = document.getElementById('exhaleProgress');
+      const phaseIndicator = document.getElementById('phaseIndicator');
+
+      // Audio elements
+      const inhaleSound = document.getElementById('inhaleSound');
+      const holdSound = document.getElementById('holdSound');
+      const exhaleSound = document.getElementById('exhaleSound');
+      const phaseChangeSound = document.getElementById('phaseChangeSound');
+
+      let timer;
+      let currentPhase = 'inhale';
+      let currentTime = 4;
+      let isRunning = false;
+
+      // Breathing phases configuration
+      const phases = {
+        inhale: {
+          duration: 4,
+          next: 'hold',
+          colorClass: 'inhale',
+          text: 'INHALE',
+          pipClass: 'inhale-pip',
+          pipCount: 3,
+          sound: inhaleSound,
+        },
+        hold: {
+          duration: 7,
+          next: 'exhale',
+          colorClass: 'hold',
+          text: 'HOLD',
+          pipClass: 'hold-pip',
+          pipCount: 2,
+          sound: holdSound,
+        },
+        exhale: {
+          duration: 8,
+          next: 'inhale',
+          colorClass: 'exhale',
+          text: 'EXHALE',
+          pipClass: 'exhale-pip',
+          pipCount: 1,
+          sound: exhaleSound,
+        },
+      };
+
+      // Start the breathing exercise
+      function startExercise() {
+        if (isRunning) return;
+
+        isRunning = true;
+        startBtn.classList.add('hidden');
+        stopBtn.classList.remove('hidden');
+
+        currentPhase = 'inhale';
+        currentTime = phases.inhale.duration;
+        updateDisplay();
+
+        // Play initial phase sound
+        playPhaseSound();
+
+        runTimer();
+      }
+
+      // Stop the breathing exercise
+      function stopExercise() {
+        clearInterval(timer);
+        isRunning = false;
+        startBtn.classList.remove('hidden');
+        stopBtn.classList.add('hidden');
+
+        // Reset to initial state
+        currentPhase = 'inhale';
+        currentTime = phases.inhale.duration;
+        updateDisplay();
+
+        // Reset progress bars
+        inhaleProgress.style.width = '0%';
+        holdProgress.style.width = '0%';
+        exhaleProgress.style.width = '0%';
+      }
+
+      // Run the timer
+      function runTimer() {
+        timer = setInterval(() => {
+          currentTime--;
+          updateDisplay();
+
+          // Play phase-specific tick sound
+          if (currentTime > 0) {
+            playPhaseSound();
+          }
+
+          // Update progress bar
+          updateProgressBar();
+
+          if (currentTime <= 0) {
+            // Play phase change sound
+            phaseChangeSound.currentTime = 0;
+            phaseChangeSound.play().catch((e) => console.log('Audio play error:', e));
+
+            // Add vibration effect
+            circle.classList.add('phase-change');
+            setTimeout(() => {
+              circle.classList.remove('phase-change');
+            }, 300);
+
+            // Move to next phase
+            currentPhase = phases[currentPhase].next;
+            currentTime = phases[currentPhase].duration;
+
+            // Play new phase sound
+            playPhaseSound();
+
+            // Reset progress bars when cycle completes
+            if (currentPhase === 'inhale') {
+              inhaleProgress.style.width = '0%';
+              holdProgress.style.width = '0%';
+              exhaleProgress.style.width = '0%';
             }
-            
-            // Stop the breathing exercise
-            function stopExercise() {
-                clearInterval(timer);
-                isRunning = false;
-                startBtn.classList.remove('hidden');
-                stopBtn.classList.add('hidden');
-                
-                // Reset to initial state
-                currentPhase = 'inhale';
-                currentTime = phases.inhale.duration;
-                updateDisplay();
-                
-                // Reset progress bars
-                inhaleProgress.style.width = '0%';
-                holdProgress.style.width = '0%';
-                exhaleProgress.style.width = '0%';
-            }
-            
-            // Run the timer
-            function runTimer() {
-                timer = setInterval(() => {
-                    currentTime--;
-                    updateDisplay();
-                    
-                    // Play phase-specific tick sound
-                    if (currentTime > 0) {
-                        playPhaseSound();
-                    }
-                    
-                    // Update progress bar
-                    updateProgressBar();
-                    
-                    if (currentTime <= 0) {
-                        // Play phase change sound
-                        phaseChangeSound.currentTime = 0;
-                        phaseChangeSound.play().catch(e => console.log("Audio play error:", e));
-                        
-                        // Add vibration effect
-                        circle.classList.add('phase-change');
-                        setTimeout(() => {
-                            circle.classList.remove('phase-change');
-                        }, 300);
-                        
-                        // Move to next phase
-                        currentPhase = phases[currentPhase].next;
-                        currentTime = phases[currentPhase].duration;
-                        
-                        // Play new phase sound
-                        playPhaseSound();
-                        
-                        // Reset progress bars when cycle completes
-                        if (currentPhase === 'inhale') {
-                            inhaleProgress.style.width = '0%';
-                            holdProgress.style.width = '0%';
-                            exhaleProgress.style.width = '0%';
-                        }
-                    }
-                }, 1000);
-            }
-            
-            // Play the appropriate sound for the current phase
-            function playPhaseSound() {
-                const sound = phases[currentPhase].sound;
-                sound.currentTime = 0;
-                sound.play().catch(e => console.log("Audio play error:", e));
-            }
-            
-            // Update the display with current phase and time
-            function updateDisplay() {
-                // Update circle color and phase text
-                circle.className = `circle mx-auto w-64 h-64 rounded-full flex items-center justify-center shadow-lg ${phases[currentPhase].colorClass}`;
-                phaseText.textContent = phases[currentPhase].text;
-                
-                // Update timer display
-                timerDisplay.textContent = currentTime > 0 ? currentTime : phases[currentPhase].duration;
-                
-                // Update phase indicator pips
-                updatePhaseIndicator();
-                
-                // Add pulse animation during inhale and exhale
-                if (currentPhase === 'inhale' || currentPhase === 'exhale') {
-                    circle.classList.add('breath-animation');
-                } else {
-                    circle.classList.remove('breath-animation');
-                }
-            }
-            
-            // Update the phase indicator pips
-            function updatePhaseIndicator() {
-                const phase = phases[currentPhase];
-                phaseIndicator.innerHTML = '';
-                
-                for (let i = 0; i < phase.pipCount; i++) {
-                    const pip = document.createElement('div');
-                    pip.className = `${phase.pipClass} ${i > 0 ? 'ml-2' : ''}`;
-                    phaseIndicator.appendChild(pip);
-                }
-            }
-            
-            // Update the progress bar for current phase
-            function updateProgressBar() {
-                const phase = phases[currentPhase];
-                const progress = ((phase.duration - currentTime) / phase.duration) * 100;
-                
-                switch(currentPhase) {
-                    case 'inhale':
-                        inhaleProgress.style.width = `${progress}%`;
-                        break;
-                    case 'hold':
-                        holdProgress.style.width = `${progress}%`;
-                        break;
-                    case 'exhale':
-                        exhaleProgress.style.width = `${progress}%`;
-                        break;
-                }
-            }
-            
-            // Event listeners
-            startBtn.addEventListener('click', startExercise);
-            stopBtn.addEventListener('click', stopExercise);
-            
-            // Initial display setup
-            updateDisplay();
-        });
-    </script>
+          }
+        }, 1000);
+      }
+
+      // Play the appropriate sound for the current phase
+      function playPhaseSound() {
+  const sound = phases[currentPhase].sound;
+  sound.pause();
+  sound.currentTime = 0;
+  sound.load(); // Ensure audio is loaded before playing
+  sound.play().catch(e => {
+    console.log("Audio play error:", e);
+  });
+}
+
+
+      // Update the display with current phase and time
+      function updateDisplay() {
+        // Update circle color and phase text
+        circle.className = `circle mx-auto w-64 h-64 rounded-full flex items-center justify-center shadow-lg ${phases[currentPhase].colorClass}`;
+        phaseText.textContent = phases[currentPhase].text;
+
+        // Update timer display
+        timerDisplay.textContent =
+          currentTime > 0 ? currentTime : phases[currentPhase].duration;
+
+        // Update phase indicator pips
+        updatePhaseIndicator();
+
+        // Add pulse animation during inhale and exhale
+        if (currentPhase === 'inhale' || currentPhase === 'exhale') {
+          circle.classList.add('breath-animation');
+        } else {
+          circle.classList.remove('breath-animation');
+        }
+      }
+
+      // Update the phase indicator pips
+      function updatePhaseIndicator() {
+        const phase = phases[currentPhase];
+        phaseIndicator.innerHTML = '';
+
+        for (let i = 0; i < phase.pipCount; i++) {
+          const pip = document.createElement('div');
+          pip.className = `${phase.pipClass} ${i > 0 ? 'ml-2' : ''}`;
+          phaseIndicator.appendChild(pip);
+        }
+      }
+
+      // Update the progress bar for current phase
+      function updateProgressBar() {
+        const phase = phases[currentPhase];
+        const progress = ((phase.duration - currentTime) / phase.duration) * 100;
+
+        switch (currentPhase) {
+          case 'inhale':
+            inhaleProgress.style.width = `${progress}%`;
+            break;
+          case 'hold':
+            holdProgress.style.width = `${progress}%`;
+            break;
+          case 'exhale':
+            exhaleProgress.style.width = `${progress}%`;
+            break;
+        }
+      }
+
+      // Toggle mobile menu for navbar
+      const menuBtn = document.getElementById('menuBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+
+      menuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+
+      // Event listeners
+      startBtn.addEventListener('click', startExercise);
+      stopBtn.addEventListener('click', stopExercise);
+
+      // Initial display setup
+      updateDisplay();
+    });
+  </script>
 </body>
 </html>
