@@ -228,7 +228,7 @@
 
       let timer;
       let currentPhase = 'inhale';
-      let currentTime = 4;
+      let currentTime = 1;
       let isRunning = false;
 
       // Breathing phases configuration
@@ -239,7 +239,7 @@
           colorClass: 'inhale',
           text: 'INHALE',
           pipClass: 'inhale-pip',
-          pipCount: 3,
+          pipCount: 1,
           sound: inhaleSound,
         },
         hold: {
@@ -263,22 +263,72 @@
       };
 
       // Start the breathing exercise
-      function startExercise() {
-        if (isRunning) return;
+     // Start the breathing exercise
+function startExercise() {
+  if (isRunning) return;
 
-        isRunning = true;
-        startBtn.classList.add('hidden');
-        stopBtn.classList.remove('hidden');
+  isRunning = true;
+  startBtn.classList.add('hidden');
+  stopBtn.classList.remove('hidden');
 
-        currentPhase = 'inhale';
-        currentTime = phases.inhale.duration;
-        updateDisplay();
+  currentPhase = 'inhale';
+  currentTime = phases.inhale.duration;
+  updateDisplay();
 
-        // Play initial phase sound
-        playPhaseSound();
+  // Play initial phase sound once to inform user cycle started
+  playPhaseSound();
 
-        runTimer();
+  runTimer();
+}
+
+// Run the timer
+function runTimer() {
+  timer = setInterval(() => {
+    currentTime--;
+    updateDisplay();
+
+    // Remove any repeated phase sound play here
+    // Play progress tick sounds (optional) — currently commented out
+
+    updateProgressBar();
+
+    if (currentTime <= 0) {
+      // Play phase change sound once to mark phase transition
+      phaseChangeSound.currentTime = 0;
+      phaseChangeSound.play().catch(e => console.log('Audio play error:', e));
+
+      // Vibration effect for phase change
+      circle.classList.add('phase-change');
+      setTimeout(() => {
+        circle.classList.remove('phase-change');
+      }, 300);
+
+      // Move to next phase
+      currentPhase = phases[currentPhase].next;
+      currentTime = phases[currentPhase].duration;
+
+      // Play the new phase's sound only once when phase changes
+      playPhaseSound();
+
+      // Reset progress bars when cycle completes
+      if (currentPhase === 'inhale') {
+        inhaleProgress.style.width = '0%';
+        holdProgress.style.width = '0%';
+        exhaleProgress.style.width = '0%';
       }
+    }
+  }, 1000);
+}
+
+// Play the appropriate sound only once per phase
+function playPhaseSound() {
+  const sound = phases[currentPhase].sound;
+  sound.pause();
+  sound.currentTime = 0;
+  sound.play().catch(e => {
+    console.log("Audio play error:", e);
+  });
+}
 
       // Stop the breathing exercise
       function stopExercise() {
@@ -297,60 +347,6 @@
         holdProgress.style.width = '0%';
         exhaleProgress.style.width = '0%';
       }
-
-      // Run the timer
-      function runTimer() {
-        timer = setInterval(() => {
-          currentTime--;
-          updateDisplay();
-
-          // Play phase-specific tick sound
-          if (currentTime > 0) {
-            playPhaseSound();
-          }
-
-          // Update progress bar
-          updateProgressBar();
-
-          if (currentTime <= 0) {
-            // Play phase change sound
-            phaseChangeSound.currentTime = 0;
-            phaseChangeSound.play().catch((e) => console.log('Audio play error:', e));
-
-            // Add vibration effect
-            circle.classList.add('phase-change');
-            setTimeout(() => {
-              circle.classList.remove('phase-change');
-            }, 300);
-
-            // Move to next phase
-            currentPhase = phases[currentPhase].next;
-            currentTime = phases[currentPhase].duration;
-
-            // Play new phase sound
-            playPhaseSound();
-
-            // Reset progress bars when cycle completes
-            if (currentPhase === 'inhale') {
-              inhaleProgress.style.width = '0%';
-              holdProgress.style.width = '0%';
-              exhaleProgress.style.width = '0%';
-            }
-          }
-        }, 1000);
-      }
-
-      // Play the appropriate sound for the current phase
-      function playPhaseSound() {
-  const sound = phases[currentPhase].sound;
-  sound.pause();
-  sound.currentTime = 0;
-  sound.load(); // Ensure audio is loaded before playing
-  sound.play().catch(e => {
-    console.log("Audio play error:", e);
-  });
-}
-
 
       // Update the display with current phase and time
       function updateDisplay() {
